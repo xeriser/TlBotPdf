@@ -173,13 +173,16 @@ async def handle_layout(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     import os
     TOKEN = os.getenv('BOTAPIKEY')
+    PORT = int(os.environ.get('PORT', '4000'))
+    URL = os.getenv('URL')
+    HOOK_URL = URL + '/' + TOKEN
     application = ApplicationBuilder().token(TOKEN).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.PHOTO, handle_image))
     application.add_handler(CallbackQueryHandler(handle_layout))
 
-    application.run_polling()
+    application.run_webhook(listen='0.0.0.0', port=PORT, url_path=TOKEN, webhook_url=HOOK_URL)
 
 if __name__ == '__main__':
     main()
